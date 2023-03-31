@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "challenge-neueralworks"
+version = "0.1.0"
+description = "inference api"
+authors = ["Diego-II <diego.irarrazaval@ug.uchile.cl>"]
+readme = "README.md"
+packages = [{include = "challenge_neueralworks"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pandas = "^1.5.3"
+sklearn = "^0.0.post1"
+seaborn = "^0.12.2"
+matplotlib = "^3.7.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -1,9 +1,11 @@
 resource "aws_ecr_repository" "ecr_inference_api_repo" {
-  name = var.ecr_repo_name
+  count = length(var.ecr_names)
+  name  = element(var.ecr_names, count.index)
 }
 
 resource "aws_ecr_repository_policy" "ecr-repo-policy" {
-  repository = aws_ecr_repository.ecr_inference_api_repo.name
+  count = length(var.ecr_names)
+  repository = aws_ecr_repository.ecr_inference_api_repo[count.index].name
   policy     = <<EOF
   {
     "Version": "2008-10-17",

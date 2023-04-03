@@ -1,4 +1,7 @@
 module "ecr" {
   source        = "./ecr"
-  ecr_repo_name = "challenge-neuralworks-ecr"
+  ecr_names = [
+   "challenge-neuralworks-ecr-dev",
+    "challenge-neuralworks-ecr-prd",
+  ]
 }

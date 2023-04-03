@@ -52,4 +52,4 @@ jobs:
       
       - name: Update Lambda Image
         run: |
-          aws lambda update-function-code --function-name test-1 --image-uri 816392071775.dkr.ecr.us-east-1.amazonaws.com/test-1:${{ github.sha }}
+          aws lambda update-function-code --function-name test-1 --image-uri 816392071775.dkr.ecr.us-east-1.amazonaws.com/challenge-neuralworks-ecr-${{ env.stage }}:latest

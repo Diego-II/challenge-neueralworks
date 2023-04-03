@@ -21,7 +21,15 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
+      
+      - name: Set stage variable
+        run: |
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            echo "export STAGE=prd" >> $GITHUB_ENV
+          elif [ "${{ github.ref }}" = "refs/heads/develop" ]; then
+            echo "export STAGE=dev" >> $GITHUB_ENV
+          fi
+          
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -35,13 +43,12 @@ jobs:
 
       - name: Build and tag Docker image
         run: |
-          docker build -t 816392071775.dkr.ecr.us-east-1.amazonaws.com/test-1:latest .
-          docker tag 816392071775.dkr.ecr.us-east-1.amazonaws.com/test-1:latest 816392071775.dkr.ecr.us-east-1.amazonaws.com/test-1:${{ github.sha }}
+          docker build -t challenge-neuralworks-ecr-"${{ env.stage }}" .
+          docker tag challenge-neuralworks-ecr-"${{ env.stage }}":latest 816392071775.dkr.ecr.us-east-1.amazonaws.com/challenge-neuralworks-ecr-"${{ env.stage }}":latest
 
       - name: Push Docker image to ECR
         run: |
-          docker push 816392071775.dkr.ecr.us-east-1.amazonaws.com/test-1:latest
-          docker push 816392071775.dkr.ecr.us-east-1.amazonaws.com/test-1:${{ github.sha }}
+          docker push 816392071775.dkr.ecr.us-east-1.amazonaws.com/challenge-neuralworks-ecr-"${{ env.stage }}":latest
       
       - name: Update Lambda Image
         run: |

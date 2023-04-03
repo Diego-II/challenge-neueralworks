@@ -14,3 +14,18 @@ module "lambda" {
   ]
   ecr_url = module.ecr.ecr_url
 }
+
+module "api-gateway" {
+  source = "./api-gateway"
+  api_gateway_name = "challenge-neuralworks-api-gateway"
+  stages = [
+   "dev",
+   "prd",
+  ]
+  lambda_names = module.lambda.lambda_name
+  lambda_invoke_arn = module.lambda.invoke_arn
+  depends_on = [
+    module.ecr,
+    module.lambda
+  ]
+}

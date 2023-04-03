@@ -26,7 +26,7 @@ def lambda_handler(
         logger.info('Model: %s', str(pipeline.__dict__))
     
         # extract input data from the event
-        input_data = event["body"]["data"]
+        input_data = json.loads(event["body"])["data"]
         
         # convert input data to a numpy array
         # input_array = np.array(list(input_data.values())).reshape(1, -1)

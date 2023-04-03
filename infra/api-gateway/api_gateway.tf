@@ -7,6 +7,9 @@ resource "aws_api_gateway_deployment" "api-gateway" {
   lifecycle {
     create_before_destroy = true
   }
+  depends_on = [
+    aws_api_gateway_integration.get-prediction-integration,
+  ]
 }
 
 resource "aws_api_gateway_stage" "api-gateway" {

@@ -25,7 +25,7 @@ resource "aws_lambda_permission" "apigw_lambda" {
   source_arn = join("", [
     aws_api_gateway_rest_api.api-gateway.execution_arn,
     "/*/",
-    aws_api_gateway_method.get-prediction-method.http_method,
+    aws_api_gateway_method.get-prediction-method[count.index].http_method,
     aws_api_gateway_resource.get-prediction-resource.path
   ])
 }

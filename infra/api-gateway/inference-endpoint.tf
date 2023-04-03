@@ -19,4 +19,5 @@ resource "aws_api_gateway_integration" "get-prediction-integration" {
   type                    = "AWS_PROXY"
   count = length(var.lambda_invoke_arn)
   uri                     = var.lambda_invoke_arn[count.index]
+  depends_on = [aws_api_gateway_method.get-prediction-method]
 }

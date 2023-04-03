@@ -29,3 +29,8 @@ Esto permite hacer solicitudes en el siguiente endpoint:
 ```bash
 curl -XPOST "http://localhost:9000/2015-03-31/functions/function/invocations" -d '{}'
 ```
+
+Tambien se puede probar de forma momentanea en:
+```
+https://lpwcrxk52w5tiaq2xaqwdlklem0swjtj.lambda-url.us-east-1.on.aws/
+```

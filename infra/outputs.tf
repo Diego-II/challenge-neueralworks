@@ -20,3 +20,18 @@ output "lambda_invoke_arn" {
     module.lambda
   ]
 }
+
+output "lambda_name" {
+  value = module.lambda.lambda_name
+  depends_on = [
+    module.lambda
+  ]
+}
+
+output "api_execution_arn" {
+  value = module.api-gateway.api_execution_arn
+}
+
+output "api_invoke_url" {
+  value = module.api-gateway.api_invoke_url
+}

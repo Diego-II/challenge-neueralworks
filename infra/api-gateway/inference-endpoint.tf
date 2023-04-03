@@ -10,6 +10,8 @@ resource "aws_api_gateway_method" "get-prediction-method" {
   api_key_required = true
   http_method   = "POST"
   authorization = "NONE"
+  count = length(var.stages)
+  operation_name = var.stages[count.index]
 }
 
 resource "aws_api_gateway_integration" "get-prediction-integration" {

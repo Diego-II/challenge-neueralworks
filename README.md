@@ -8,7 +8,6 @@ Neuralworks challenge
 - El código está escrito en Python 3.10.
 - Se utiliza Poetry como gestor de dependencias y paquetes.
 - La infraestructura esta en AWS.
-- 
 
 ## Modelos:
 

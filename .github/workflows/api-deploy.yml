@@ -43,12 +43,12 @@ jobs:
 
       - name: Build and tag Docker image
         run: |
-          docker build -t challenge-neuralworks-ecr-$stage .
-          docker tag challenge-neuralworks-ecr-$stage:latest 816392071775.dkr.ecr.us-east-1.amazonaws.com/challenge-neuralworks-ecr-$stage:latest
+          docker build -t challenge-neuralworks-ecr-${{ env.stage }} .
+          docker tag challenge-neuralworks-ecr-${{ env.stage }}:latest 816392071775.dkr.ecr.us-east-1.amazonaws.com/challenge-neuralworks-ecr-${{ env.stage }}:latest
 
       - name: Push Docker image to ECR
         run: |
-          docker push 816392071775.dkr.ecr.us-east-1.amazonaws.com/challenge-neuralworks-ecr-$stage:latest
+          docker push 816392071775.dkr.ecr.us-east-1.amazonaws.com/challenge-neuralworks-ecr-${{ env.stage }}:latest
       
       - name: Update Lambda Image
         run: |

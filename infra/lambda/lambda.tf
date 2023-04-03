@@ -9,12 +9,4 @@ resource aws_lambda_function model-api-lambda {
     "latest"
   ])
   package_type = "Image"
-  depends_on = [
-    aws_cloudwatch_log_group.lambda_logs
-  ]
-  log_group_name = aws_cloudwatch_log_group.lambda_logs[count.index].name
-}
-
-resource "aws_cloudwatch_log_group" "lambda_logs" {
-  name = "/aws/lambda/${element(var.lambda_names, count.index)}"
 }

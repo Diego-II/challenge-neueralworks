@@ -1,15 +1,15 @@
 variable "lambda_names" {
-    type = list(string)
+    type = string
     description = "lambda names."
 }
 
 variable "lambda_invoke_arn" {
-    type = list(string)
+    type = string
     description = "lambda invoke arn."
 }
 
-variable "stages" {
-    type = list(string)
+variable "stage" {
+    type = string
     description = "stages."
 }
 

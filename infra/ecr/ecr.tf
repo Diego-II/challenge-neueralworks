@@ -1,9 +1,9 @@
-resource "aws_ecr_repository" "ecr_inference_api" {
+resource "aws_ecr_repository" "ecr_inference_api_repo" {
   name = var.ecr_repo_name
 }
 
 resource "aws_ecr_repository_policy" "ecr-repo-policy" {
-  repository = aws_ecr_repository.ecr_inference_api.name
+  repository = aws_ecr_repository.ecr_inference_api_repo.name
   policy     = <<EOF
   {
     "Version": "2008-10-17",

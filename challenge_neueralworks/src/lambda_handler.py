@@ -1,18 +1,10 @@
 import json
 import logging
-import joblib
-import pickle
+import dill as pickle
+import pandas as pd
 import numpy as np
 from glob import glob
-from sklearn.pipeline import Pipeline
-from .src.pipeline.preprocesing import CyclicalEncoder
-from sklearn.compose import ColumnTransformer
-from sklearn.preprocessing import OneHotEncoder
-from sklearn.linear_model import LogisticRegression
-
-import sys
-
-sys.path.append("/src/pipeline/preprocesing")
+from .models.delay.inference import get_pipeline
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -27,18 +19,20 @@ def lambda_handler(
     models = glob('/models/*')
     logger.info('Models: %s', str(models))
     # load the dumped pipeline
-    pipeline = pickle.load(open('/models/delay/model_v0.pkl', 'rb'))
+    pipeline = get_pipeline()
     logger.info('Loaded model')
+    
     logger.info('Model: %s', str(pipeline.__dict__))
     
     # extract input data from the event
     input_data = event['data']
     
     # convert input data to a numpy array
-    input_array = np.array(input_data).reshape(1, -1)
+    # input_array = np.array(list(input_data.values())).reshape(1, -1)
     
+    input_df = pd.DataFrame([input_data])
     # generate predictions using the predict_proba method
-    prediction = pipeline.predict_proba(input_array)
+    prediction = pipeline.predict_proba(input_df)
     
     # return prediction as JSON response
     response = {

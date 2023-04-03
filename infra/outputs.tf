@@ -13,3 +13,10 @@ output "ecr_url" {
     module.ecr
   ]
 }
+
+output "lambda_invoke_arn" {
+  value = module.lambda.invoke_arn
+  depends_on = [
+    module.lambda
+  ]
+}

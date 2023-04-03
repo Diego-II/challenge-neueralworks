@@ -25,9 +25,9 @@ jobs:
       - name: Set stage variable
         run: |
           if [ "${{ github.ref }}" = "refs/heads/main" ]; then
-            echo "export stage=prd" >> $GITHUB_ENV
+            echo "stage=prd" >> $GITHUB_ENV
           elif [ "${{ github.ref }}" = "refs/heads/develop" ]; then
-            echo "export stage=dev" >> $GITHUB_ENV
+            echo "stage=dev" >> $GITHUB_ENV
           fi
 
       - name: Configure AWS credentials

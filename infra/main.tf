@@ -12,6 +12,9 @@ module "lambda" {
    "challenge-neuralworks-lambda-dev",
    "challenge-neuralworks-lambda-prd",
   ]
+  depends_on = [
+    module.ecr
+  ]
   ecr_url = module.ecr.ecr_url
 }
 

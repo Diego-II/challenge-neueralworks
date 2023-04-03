@@ -16,5 +16,6 @@ resource aws_lambda_function model-api-lambda {
 }
 
 resource "aws_cloudwatch_log_group" "lambda_logs" {
+  count = length(var.lambda_names)
   name = "/aws/lambda/${element(var.lambda_names, count.index)}"
 }

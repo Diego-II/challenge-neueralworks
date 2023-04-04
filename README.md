@@ -7,6 +7,7 @@ En este repo se encuentra la infraestructura cloud (`terraform`) para el deploy 
 ## Índice de la documentación:
 - [challenge-neueralworks](#challenge-neueralworks)
   - [Índice de la documentación:](#índice-de-la-documentación)
+- [Para fácil navegación en la documentación:](#para-fácil-navegación-en-la-documentación)
 - [Documentación API](#documentación-api)
   - [API Methods](#api-methods)
     - [POST /get-prediction](#post-get-prediction)
@@ -28,6 +29,19 @@ En este repo se encuentra la infraestructura cloud (`terraform`) para el deploy 
     - [Inicio rápido para desarrollo:](#inicio-rápido-para-desarrollo)
   - [Anexos:](#anexos)
     - [CodeShip no vende suscripciones (sad):](#codeship-no-vende-suscripciones-sad)
+
+# Para fácil navegación en la documentación:
+
+A continuación hay algunas referencias a la misma documentación o archivos para ir más fácil a la respuesta de cada una de las 5 preguntas del desafío:
+
+1. Escoge el modelo que a tu criterio tenga una mejor performance, argumentando tu decisión. [Ver](#modelos) y en particular, el notebook en [`notebooks/`](notebooks/model.ipynb).
+2. Implementa cambios sobre el modelo escogiendo la o las técnicas que prefieras buscando mejorar los
+resultados. Te recomendamos dejar los intentos que no lograron mejorar los resultados. Mismo lugar que la pregunta anterior.
+3. Serializa el modelo seleccionado (puede ser de los construidos en el punto 2) e implementa una API REST
+para poder predecir atrasos de nuevos vuelos. La serialización del modelo se realiza en el [`notebook model`](notebooks/model.ipynb). La API se encuentra documentada en [Documentación API](#documentación-api). La implementación de la API es en [`challenge_neueralworks/`](challenge_neueralworks). Para el deploy, se construye una imagen de Docker con el archivo [`Dockerfile`](Dockerfile) y se despliega en AWS con Terraform. La infraestructura se encuentra en [`infra/`](infra).
+4. Automatiza el proceso de build y deploy de la API, utilizando uno o varios servicios cloud. Argumenta tu decisión sobre los servicios utilizados. El proceso de CI/CD se encuentra en [CI/CD](#cicd). Se utilizan Github Actions  y Terraform Cloud. La principal razón por la cual se utiliza Github Actions es porque es gratuito y fácil de utilizar. Terraform Cloud también es gratuito y permite tener un control de versiones de la infraestructura. Además, se integra con Github lo que permite automatizar el deploy de la infraestructura.
+5. Realiza pruebas de estrés a la API con el modelo expuesto con al menos 50.000 requests durante 45 segundos. Para esto debes utilizar la herramienta `wrk` y presentar las métricas obtenidas. ¿Cómo podrías mejorar el performance de las pruebas anteriores? Las pruebas de estrés se utilizó `Locust`. Esto luego de probar `wrk` pero teniendo problemas con la cantidad de workers y solicitudes simultáneas. Se utilizó también `JMeter` pero era poco práctico para compartir o replicar los resultados. Hay un poco de eso en [algunos *disclaimers*](#algunos-disclaimers). Más información en la documentación de [`stress_test`](docs/stress_test.md).
+
 
 # Documentación API
 La API está protegida y es necesario contar con una API key para poder hacer requests. La API key se debe enviar en el header `x-api-key`. Se enviará una api key por correo.
@@ -198,7 +212,6 @@ No es necesario tener `terraform` ni `Docker` para desarrollar modelos. La parte
 
 1. Instalar todas las dependencias de desarrollo con `poetry install`.
 2. Comenzar a desarrollar.
-   
 
 Para pruebas en local de la API se debe tener Docker andando. 
 

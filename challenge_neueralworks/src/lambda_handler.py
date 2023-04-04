@@ -40,7 +40,7 @@ def lambda_handler(
             data
         )
         
-        if ~flag:
+        if not flag:
             return {
                 'statusCode': 400,
                 'body': json.dumps(f'Bad request: missing or additional keys {str(data)}.')

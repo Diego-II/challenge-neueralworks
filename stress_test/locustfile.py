@@ -1,36 +1,24 @@
 import os
-from locust import FastHttpUser,HttpUser, task, between
-import json, random, math
-import requests
+from locust import HttpUser, TaskSet, task
+from dotenv import load_dotenv
 
-# Host is local
-host = 'https://fx5e3htbyl.execute-api.us-east-1.amazonaws.com'
+load_dotenv()
+class MyTaskSet(TaskSet):
+    @task
+    def test_inference_delay(self):
+        headers = {'x-api-key': os.environ.get('API_KEY')}
+        data = {
+            "DIA-I": 3,
+            "MES-I": 2,
+            "HORA-I": 9,
+            "OPERA": "Grupo LATAM",
+            "TIPOVUELO": "N",
+            "SIGLADES": "LaSerena",
+            "DIANOM": "Viernes"
+        }
+        self.client.post('/inference/delay', headers=headers, json=data)
 
-headers = {
-    'x-api-key' : 'JVKYsIVNnc9ka9g2Z97Ab90GrylnuaDv4xrDK0rn',
-    'Content-Type': 'application/json'
-}
-
-
-data = {
-    "DIA-I": 3,
-    "MES-I": 2,
-    "HORA-I": 9,
-    "OPERA": "Grupo LATAM",
-    "MES": 2,
-    "TIPOVUELO": "N",
-    "SIGLADES": "LaSerena",
-    "DIANOM": "Viernes"
-}
-
-class WebsiteUser(HttpUser):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def on_start(self):
-        pass
-    
-    @task(3)
-    def get_sessions(self):
-        self.client.post(host + '/prd/get-prediction', headers=headers, json=json.dumps(data))
+class MyUser(HttpUser):
+    tasks = [MyTaskSet]
+    min_wait = 1000
+    max_wait = 5000

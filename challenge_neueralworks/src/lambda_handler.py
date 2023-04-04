@@ -20,7 +20,7 @@ def lambda_handler(
     ]
     logger.info('Models: %s', str(models))
     
-    model_name = event['pathParameters'].get('model')
+    model_name = event['pathParameters'].get('model_name')
     if model_name not in models:
         return {
             'statusCode': 404,

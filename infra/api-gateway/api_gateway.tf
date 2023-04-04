@@ -1,5 +1,6 @@
 resource "aws_api_gateway_rest_api" "api-gateway" {
   name = var.api_gateway_name
+  description = "API Gateway for Neural Works Challenge"
 }
 
 resource "aws_api_gateway_deployment" "api-gateway" {
@@ -8,7 +9,7 @@ resource "aws_api_gateway_deployment" "api-gateway" {
     create_before_destroy = true
   }
   depends_on = [
-    aws_api_gateway_integration.get-prediction-integration,
+    aws_api_gateway_integration.inference-integration,
   ]
 }
 
@@ -26,7 +27,7 @@ resource "aws_lambda_permission" "apigw_lambda" {
   source_arn = join("", [
     aws_api_gateway_rest_api.api-gateway.execution_arn,
     "/*/",
-    aws_api_gateway_method.get-prediction-method.http_method,
+    aws_api_gateway_method.inference-method.http_method,
     aws_api_gateway_resource.model_name.path
   ])
 }

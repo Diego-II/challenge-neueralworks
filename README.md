@@ -8,11 +8,11 @@ En este repo se encuentra la infraestructura cloud (`terraform`) para el deploy 
 - [challenge-neueralworks](#challenge-neueralworks)
   - [Índice de la documentación:](#índice-de-la-documentación)
 - [Para fácil navegación en la documentación:](#para-fácil-navegación-en-la-documentación)
+  - [Algunos *disclaimers*:](#algunos-disclaimers)
 - [Documentación API](#documentación-api)
   - [API Methods](#api-methods)
-    - [POST /get-prediction](#post-get-prediction)
+    - [POST /inference/\<model\_name\>](#post-inferencemodel_name)
 - [Documentación proyecto para desarrollo](#documentación-proyecto-para-desarrollo)
-  - [Algunos *disclaimers*:](#algunos-disclaimers)
   - [Requerimientos del proyecto:](#requerimientos-del-proyecto)
   - [Estructura del repositorio:](#estructura-del-repositorio)
     - [`challenge_neueralworks/`:](#challenge_neueralworks)
@@ -29,6 +29,7 @@ En este repo se encuentra la infraestructura cloud (`terraform`) para el deploy 
     - [Inicio rápido para desarrollo:](#inicio-rápido-para-desarrollo)
   - [Anexos:](#anexos)
     - [CodeShip no vende suscripciones (sad):](#codeship-no-vende-suscripciones-sad)
+    - [Para mejorar:](#para-mejorar)
 
 # Para fácil navegación en la documentación:
 
@@ -40,15 +41,37 @@ resultados. Te recomendamos dejar los intentos que no lograron mejorar los resul
 3. Serializa el modelo seleccionado (puede ser de los construidos en el punto 2) e implementa una API REST
 para poder predecir atrasos de nuevos vuelos. La serialización del modelo se realiza en el [`notebook model`](notebooks/model.ipynb). La API se encuentra documentada en [Documentación API](#documentación-api). La implementación de la API es en [`challenge_neueralworks/`](challenge_neueralworks). Para el deploy, se construye una imagen de Docker con el archivo [`Dockerfile`](Dockerfile) y se despliega en AWS con Terraform. La infraestructura se encuentra en [`infra/`](infra).
 4. Automatiza el proceso de build y deploy de la API, utilizando uno o varios servicios cloud. Argumenta tu decisión sobre los servicios utilizados. El proceso de CI/CD se encuentra en [CI/CD](#cicd). Se utilizan Github Actions  y Terraform Cloud. La principal razón por la cual se utiliza Github Actions es porque es gratuito y fácil de utilizar. Terraform Cloud también es gratuito y permite tener un control de versiones de la infraestructura. Además, se integra con Github lo que permite automatizar el deploy de la infraestructura.
-5. Realiza pruebas de estrés a la API con el modelo expuesto con al menos 50.000 requests durante 45 segundos. Para esto debes utilizar la herramienta `wrk` y presentar las métricas obtenidas. ¿Cómo podrías mejorar el performance de las pruebas anteriores? Las pruebas de estrés se utilizó `Locust`. Esto luego de probar `wrk` pero teniendo problemas con la cantidad de workers y solicitudes simultáneas. Se utilizó también `JMeter` pero era poco práctico para compartir o replicar los resultados. Hay un poco de eso en [algunos *disclaimers*](#algunos-disclaimers). Más información en la documentación de [`stress_test`](docs/stress_test.md).
+5. Realiza pruebas de estrés a la API con el modelo expuesto con al menos 50.000 requests durante 45 segundos. Para esto debes utilizar la herramienta `wrk` y presentar las métricas obtenidas. ¿Cómo podrías mejorar el performance de las pruebas anteriores? Las pruebas de estrés se utilizó `Locust`. Esto luego de probar `wrk` pero teniendo problemas con la cantidad de workers y solicitudes simultáneas. Se utilizó también `JMeter` pero era poco práctico para compartir o replicar los resultados. Hay un poco de eso en [algunos *disclaimers*](#algunos-disclaimers). La documentación más completa se encuentra en [`stress_test`](docs/stress_test.md).
 
+## Algunos *disclaimers*:
+- Tengo un error en el nombre del repo (y del paquete en python). Lo dejé así porque no creo que sea tan grave en este momento. Si alcanzo, hago las correcciones necesarias.
+- Esta vez, los datos y los notebooks se almacenarán en el mismo repositorio... sé que no es la mejor práctica, pero estoy tratando de mantener las cosas simples.
+- El código está escrito en Python 3.10.
+- Se utiliza Poetry como gestor de dependencias y paquetes.
+- La infraestructura esta en AWS. Si necesitan acceso les puedo crear un usuario y mandar credenciales por correo. Crearía un rol con acceso limitado... la cuenta es personal.
+- Para levantar toda la infraestructura se debe tener Terraform instalado y configurado. Se utilizó terraform cloud. También les puedo dar acceso, es mi cuenta personal.
+- El CI/CD está utilizando Github Actions. Se intentó crear una cuenta personal en `CodeShip` pero no me dejó crear una cuenta personal (ver imagen del [final](#codeship-no-vende-suscripciones-sad)). Además Github hace fácil hacer distintas reglas en función del nombre de la rama.
+- Las pruebas de stress se realizaron con tres herramientas distintas:
+  - `wrk`, pero no funcionó para hacer muchas requests concurrentes.
+  - `JMeter`, funcionó bien pero para que puedan probar era un poco más engorroso.
+  - `Locust`, funcionó bien y es muy fácil de usar. Pueden probar localmente con las instrucciones de la sección <BLAH> de este documento. La gran ventaja es que es Python e instalar como dependencia es fácil. Por otro lado, la interfaz web y los reportes son bien completos.
+- Hay mucho espacio para mejora. Dejaré una lista en el final de este documento ([puntos de mejora](#para-mejorar)).
 
 # Documentación API
 La API está protegida y es necesario contar con una API key para poder hacer requests. La API key se debe enviar en el header `x-api-key`. Se enviará una api key por correo.
-## API Methods
-### POST /get-prediction
+
+**URL**
+
 ```
-POST: /get-prediction
+https://jxpfxdzhui.execute-api.us-east-1.amazonaws.com/prd/inference/<model_name>
+```
+
+## API Methods
+### POST /inference/<model_name>
+
+La idea es "parametrizar" y que el modelo sea un parámetro de la URL. Esto facilita el deploy de nuevos modelos sin infra adicional.
+```
+POST: /inference/delay
 Content Tyoe: json
 ```
 Detalle de la request:
@@ -58,7 +81,6 @@ Detalle de la request:
 |  `"MES-I"`     | [int] | Mes programado para el vuelo.|
 |  `"HORA-I"` | [int] | Hora programada para el vuelo |
 |  `"OPERA"` | [String] | Aerolínea que opera el vuelo. Debe estar en el dataset de entrenamiento. De lo contrario fallará con `500 Internal Server Error`. |
-|  `"MES"` | [int] | Mes programado para el vuelo.|
 |  `"TIPOVUELO"` | [String] | Tipo de vuelo. Puede ser dos valores distintos: `['I', 'N']`. |
 |  `"SIGLADES"` | [String] |  Nombre ciudad destino. |
 |  `"DIANOM"` | [String] |  Día de la semana de operación del vuelo. Son 7 valores distintos: `['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Sabado','Viernes']`. |
@@ -67,15 +89,14 @@ Detalle de la request:
 Example:
 ```bash
 curl --request POST \
-  --url https://fx5e3htbyl.execute-api.us-east-1.amazonaws.com/prd/get-prediction \
+  --url https://jxpfxdzhui.execute-api.us-east-1.amazonaws.com/prd/inference/delay \
   --header 'Content-Type: application/json' \
-  --header 'x-api-key: <API-KEY>' \
+  --header 'x-api-key: <API_KEY>' \
   --data '{
 	"DIA-I": 3,
 	"MES-I": 2,
 	"HORA-I": 9,
 	"OPERA": "Grupo LATAM",
-	"MES": 2,
 	"TIPOVUELO": "N",
 	"SIGLADES": "LaSerena",
 	"DIANOM": "Viernes"
@@ -94,20 +115,9 @@ Response:
 }
 ```
 
+Los resultados que se entregan son la probabilidad de `0`, es decir NO ATRASO de 15 minutos y la probabilidad de `1`, es decir ATRASO de 15 minutos. Se elije esta forma de entrega de resultados debido a que permite implementar distintos "thresholds" en la predicción, lo que en el negocio es interesante para saber hacia donde mover los fallos.
 
 # Documentación proyecto para desarrollo
-## Algunos *disclaimers*:
-- Tengo un error en el nombre del repo (y del paquete en python). Lo dejé así porque no creo que sea tan grave en este momento. Si alcanzo, hago las correcciones necesarias.
-- Esta vez, los datos y los notebooks se almacenarán en el mismo repositorio... sé que no es la mejor práctica, pero estoy tratando de mantener las cosas simples.
-- El código está escrito en Python 3.10.
-- Se utiliza Poetry como gestor de dependencias y paquetes.
-- La infraestructura esta en AWS. Si necesitan acceso les puedo crear un usuario y mandar credenciales por correo. Crearía un rol con acceso limitado... la cuenta es personal.
-- Para levantar toda la infraestructura se debe tener Terraform instalado y configurado. Se utilizó terraform cloud. También les puedo dar acceso, es mi cuenta personal.
-- El CI/CD está utilizando Github Actions. Se intentó crear una cuenta personal en `CodeShip` pero no me dejó crear una cuenta personal (ver imagen del [final](#codeship-no-vende-suscripciones-sad)). Además Github hace fácil hacer distintas reglas en función del nombre de la rama.
-- Las pruebas de stress se realizaron con tres herramientas distintas:
-  - `wrk`, pero no funcionó para hacer muchas requests concurrentes.
-  - `JMeter`, funcionó bien pero para que puedan probar era un poco más engorroso.
-  - `Locust`, funcionó bien y es muy fácil de usar. Pueden probar localmente con las instrucciones de la sección <BLAH> de este documento. La gran ventaja es que es Python e instalar como dependencia es fácil. Por otro lado, la interfaz web y los reportes son bien completos.
 
 ## Requerimientos del proyecto:
 - `python>=3.10`
@@ -234,3 +244,14 @@ https://lpwcrxk52w5tiaq2xaqwdlklem0swjtj.lambda-url.us-east-1.on.aws/
 ## Anexos:
 ### CodeShip no vende suscripciones (sad):
 ![CodeShip no vende suscripciones](docs/imgs/codeship.png)
+
+### Para mejorar:
+1. En primer lugar, deploy de nuevos modelos no quedó tan simple. Hay que hacer varias cosas:
+   1. Entrenar un modelo nuevo y hacer el dump correspondiente. Si se implementan clases custom, deben estar en el paquete `challenge_neueralworks`, sino no es posible que se serialicen bien.
+   2. Guardar un solo dump en `models/<model_name>/<algun nombre>.pkl`. Se intentó hacer algo más inteligente pero no funcionó.
+   3. Agregar un modelo en `challenge_neueralworks/src/<otro modelo>` heredando de la clase `Model` y escribiendo el método `predict`.
+   4. Manejar este nuevo modelo en la API con el `lambda_handler`.
+2. Se puede mejorar el versionamiento y almacenamiento de los modelos con herramientas como MLFlow. No se implementaron por temas de tiempo.
+3. Se puede considerar almacenar las imágenes o dumps de los modelos en la nube también.
+4. Para las pruebas de estrés, se puede generar data sintética distinta. Incluso se pueden hacer Asserts comparando con, por ejemplo, un dataset predefinido. 
+5. Se puede mejorar la documentación de la API.

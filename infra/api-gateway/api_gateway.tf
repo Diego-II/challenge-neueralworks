@@ -27,6 +27,6 @@ resource "aws_lambda_permission" "apigw_lambda" {
     aws_api_gateway_rest_api.api-gateway.execution_arn,
     "/*/",
     aws_api_gateway_method.get-prediction-method.http_method,
-    aws_api_gateway_resource.get-prediction-resource.path
+    aws_api_gateway_resource.model_name.path
   ])
 }

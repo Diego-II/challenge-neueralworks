@@ -30,8 +30,14 @@ def lambda_handler(
     if model_name == 'delay':
         model = DelayModel()
         
+        
+        if isinstance(event["body"], str):
+            data = json.loads(event["body"])
+        else:
+            data = event["body"]
+            
         flag, data = model.prepare_data(
-            json.loads(event["body"])
+            data
         )
         
         if ~flag:

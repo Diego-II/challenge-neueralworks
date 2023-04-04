@@ -10,12 +10,17 @@ packages = [{include = "challenge_neueralworks"}]
 [tool.poetry.dependencies]
 python = "^3.10"
 pandas = "^1.5.3"
-seaborn = "^0.12.2"
-matplotlib = "^3.7.1"
 joblib = "^1.2.0"
 scikit-learn = "^1.2.2"
 dill = "^0.3.6"
 
+
+[tool.poetry.group.dev.dependencies]
+seaborn = "^0.12.2"
+matplotlib = "^3.7.1"
+jupyter = "^1.0.0"
+dill = "^0.3.6"
+locust = "^2.15.1"
 
 [build-system]
 requires = ["poetry-core"]

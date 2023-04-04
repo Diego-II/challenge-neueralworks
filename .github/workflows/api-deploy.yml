@@ -26,7 +26,7 @@ jobs:
         run: |
           if [ "${{ github.ref }}" = "refs/heads/main" ]; then
             echo "stage=prd" >> $GITHUB_ENV
-          elif [ "${{ github.ref }}" = "refs/heads/develop" ]; then
+          else
             echo "stage=dev" >> $GITHUB_ENV
           fi
 

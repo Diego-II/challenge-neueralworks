@@ -1,5 +1,7 @@
 # Documentación infraestructura.
 
+Se utiliza AWS debido a que es lo que me es más familiar. El cuarto día de trabajo noté el "nice to have" de la oferta acerca de uso de GCP.
+
 Se realizó un diagrama de alto nivel de esta en [miro](https://miro.com/app/board/uXjVMWB33-4=/?share_link_id=138467065206). Básicamente es una infraestructura serverless, con un API Gateway que se comunica con una función Lambda que hace el deploy de un contenedor de Docker que contiene el modelo de ML:
 
 ![Infra PRD](imgs/aws-challenge-neuralworks-prd.jpg)

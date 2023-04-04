@@ -37,6 +37,6 @@ Esto permite tener un ambiente de desarrollo para poder experimentar libremente 
 Se realizó un cálculo aproximado del precio de recibir 1.000.000 de requests al mes tomando en cuenta esta infraestructura. Los resultados están en el doc [`Estimate AWS`](other/My%20Estimate%20-%20AWS%20Pricing%20Calculator.pdf).
 
 Se deja un resumen de los resultados:
-[Estimate AWS](imgs/estimate.png)
+![Estimate AWS](imgs/estimate.png)
 
 Tomando en cuenta la capacidad que tiene esta infraestructura serverless y el costo, se cree que es una decisión acertada. Si se quiere, se puede dejar concurrencia reservada para evitar el *cold start* de la lambda al pasar mucho tiempo dormida. Esto aumenta los costos pero permite tener una mejor experiencia de usuario y menos latencia en la "primera request".

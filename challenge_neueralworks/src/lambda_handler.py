@@ -35,10 +35,14 @@ def lambda_handler(
             data = json.loads(event["body"])
         else:
             data = event["body"]
-            
+        
+        logger.info('Received data: %s', str(data))
+        
         flag, data = model.prepare_data(
             data
         )
+        
+        logger.info('Prepared data: %s', str(data))
         
         if not flag:
             return {

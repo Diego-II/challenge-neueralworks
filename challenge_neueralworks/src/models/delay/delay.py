@@ -51,10 +51,12 @@ class DelayModel(Model):
             return False, additional_keys
 
         return True, \
-            sorted(
-                data.items(),
-                key=lambda pair: self.required_fiels.index(pair[0])
-            )
+            {
+                k: v for k, v in sorted(
+                    data.items(),
+                    key=lambda pair: self.required_fiels.index(pair[0])
+                )
+            }
             
     def get_prediction(
         self,

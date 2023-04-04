@@ -15,7 +15,9 @@ def lambda_handler(
     logger.info('Received event: %s', event)
     
     # List models in models directory
-    models = glob('/models/*')
+    models = [
+        model.split('/')[-1] for model in glob('/models/*')
+    ]
     logger.info('Models: %s', str(models))
     
     model_name = event['pathParameters'].get('model')

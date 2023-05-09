@@ -255,3 +255,5 @@ https://lpwcrxk52w5tiaq2xaqwdlklem0swjtj.lambda-url.us-east-1.on.aws/
 3. Se puede considerar almacenar las imágenes o dumps de los modelos en la nube también.
 4. Para las pruebas de estrés, se puede generar data sintética distinta. Incluso se pueden hacer Asserts comparando con, por ejemplo, un dataset predefinido. 
 5. Se puede mejorar la documentación de la API.
+
+-- This is a test --
